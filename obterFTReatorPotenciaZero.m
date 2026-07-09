@@ -1,14 +1,11 @@
-function G0 = obterMalhaCorrente(planta)
+function G0 = obterFTReatorPotenciaZero(planta)
 % Obtem a função de transferêcnai do controador do Reator de Potência Zero, que
 % relaciona a saída fracionária de potência (δN(s)/N0) com a entrada de reatividade 
 % transferencia de malha aberta Ga e fechada Gf da malha de corrente.
 
 s = tf('s');
 
-beta = 0;
-for elemento = planta.beta
-	beta += elemento;
-end
+beta = calculaBeta(planta);
 
 coeficiente = 0*s;
 
