@@ -1,0 +1,15 @@
+function GF = obterFTReatividadeDeRealimentacao(planta)
+% Obtem a função de transferêcnai da reatividade de realimenta¸c˜ao total combinada (GF (s)) 
+%gerada pelo aquecimento do combustível e geração de vazios
+
+	s = tf('s');
+
+	G = ((planta.alphatheta * planta.ktheta * planta.Tv + planta.alphav * planta.kv * ...
+    	planta.Ttheta)*s + planta.alphatheta * planta.ktheta + planta.alphav * ...
+     	planta.kv)/((planta.Ttheta * planta.Tv)*s*s + (planta.Ttheta + ...
+     	planta.Tv)*s + 1 );
+     
+
+	
+
+end
