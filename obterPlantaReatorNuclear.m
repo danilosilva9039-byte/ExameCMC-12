@@ -16,6 +16,7 @@ kv = ;
 Tv = ;
 Ttheta = ;
 N0 = ;
+n = ;
 
 
 end
