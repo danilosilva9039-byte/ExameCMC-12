@@ -4,6 +4,6 @@ function beta = calculaBeta(planta)
 
 	beta = 0;
 	for elemento = planta.beta
-		beta += elemento;
+		beta = beta + elemento;
 	end
 end

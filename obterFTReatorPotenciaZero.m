@@ -10,7 +10,7 @@ beta = calculaBeta(planta);
 coeficiente = 0*s;
 
 for i = 1:6
-	coeficiente += ((planta.b)(i))/beta/(s + (planta.lambda)(i));
+	coeficiente = coeficiente + (planta.beta(i))/beta/(s + planta.lambda(i));
 end
 
 G0 = 1/s/(planta.Lambda / beta + coeficiente);
