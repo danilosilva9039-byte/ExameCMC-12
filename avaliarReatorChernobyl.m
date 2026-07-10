@@ -1,17 +1,17 @@
-function avaliarReatorChernobyl()
+function avaliarReatorChernobyl(planta)
 % faz a simulacao para atestar que o sistema
 % de chernobyl foi falho
 
-t_final = 10; 
+t_final = 30; 
 passo = 0.01;
 s = tf('s');
 t = 0:passo:t_final;
 
-planta = obterPlantaReatorNuclear;
+%planta = obterPlantaReatorNuclear;
 beta = calculaBeta(planta);
 
 Gp = obterTFReatividadeExterna(planta);
-[y_tf, t_tf] = step(Gp, t);
+[y_tf, t_tf] = lsim(Gp, t, t);
 dpex = timeseries(y_tf, t_tf);
 
 %atuador = 1 /s/s; % a ser alterado
@@ -41,6 +41,7 @@ in = in.setVariable('numGtheta', numGtheta);
 in = in.setVariable('denGtheta', denGtheta);
 in = in.setVariable('planta', planta);
 in = in.setVariable('beta', beta);
+in = in.setModelParameter('Solver', 'ode15s'); % eh um teste a ser removido
 
 simulacao = sim(in);
 
