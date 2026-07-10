@@ -17,6 +17,7 @@ planta.Tv = 1;
 planta.Ttheta = 1;
 planta.N0 = 1;
 planta.n = 1;
+planta.W0 = 1;
 
 
 end
