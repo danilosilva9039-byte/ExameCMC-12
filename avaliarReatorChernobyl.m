@@ -10,9 +10,13 @@ t = 0:passo:t_final;
 planta = obterPlantaReatorNuclear;
 beta = calculaBeta(planta);
 
-atuador = 1 /s/s; % a ser alterado
-[y_tf, t_tf] = step(atuador, t); % a ser alterado
+Gp = obterTFReatividadeExterna(planta);
+[y_tf, t_tf] = step(Gp, t);
 dpex = timeseries(y_tf, t_tf);
+
+%atuador = 1 /s/s; % a ser alterado
+%[y_tf, t_tf] = step(atuador, t); % a ser alterado
+%dpex = timeseries(y_tf, t_tf);
 
 [Gtheta, Gv] = obterTFReatividade(planta);
 G0 = obterFTReatorPotenciaZero(planta);

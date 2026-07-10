@@ -6,18 +6,23 @@ function planta = obterPlantaReatorNuclear()
 % em Chernobyl
 
 planta.keff = 1;
-planta.alphav = 1;
-planta.alphatheta = 1;
-planta.beta = [1, 1, 1, 1, 1, 1];
-planta.lambda = [1, 1, 1, 1, 1, 1];
-planta.Lambda = 1;
-planta.ktheta = 1;
-planta.kv = 1;
-planta.Tv = 1;
-planta.Ttheta = 1;
-planta.N0 = 1;
-planta.n = 1;
-planta.W0 = 1;
+planta.alphav = 2*(10^-4);% estimado por modelos numéricos nos computadores de chernobyl
+planta.alphatheta = -1.2*(10^-5); % estimado por modelos numéricos nos computadores de chernobyl
+planta.beta = [ 0.00021 , 0.00142 , 0.00127 , 0.00256 , 0.00074 , 0.00027];
+planta.lambda = [ 0.0124 , 0.0305 , 0.111 , 0.301 , 1.14 , 3.01 ];
+planta.Lambda = 10^(-3); % em segundos, incerteza razoavel 
+planta.ktheta = 900; % Valor em Kelvin
+planta.kv = 1; %valor médio, por simplificacao
+planta.Tv = 2; %em segundo, valor médio, por simplificacao
+planta.Ttheta = 5; %em segundo, valor médio
+planta.N0 = 3.2*(10^9); % Em watts
+planta.n = 0.8; %modelo teórico de escoamento turbulento da equação de Dittus-Boelter
+planta.W0 = (4.8*(10^4))/3600; %Em m/s, medido na usina
+planta.v = 0.4; % em m/s, velocidade de inserção das hastes de controle
+planta.d = 1.25; % em metros, Distância percorrida pela haste até o pico de reatividade
+planta.d1 = 5.75; % em metros, distância entre o pico positivo até a inserção total
+planta.PRN = -2*calculaBeta(planta); % pico de reatividade proveniente do boro
+planta.PR = 0.5*calculaBeta(planta); % Pico de Reatividade
 
 
 end
