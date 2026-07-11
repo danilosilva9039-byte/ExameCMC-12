@@ -9,6 +9,7 @@ function avaliarReatorChernobylControlado()
     t = 0:passo:t_final;
 
     planta = obterPlantaReatorNuclear();
+    planta = SimulaFalhaChernobyl(planta);
     beta = calculaBeta(planta);
 
     Gp = obterTFReatividadeExterna(planta);
@@ -63,7 +64,7 @@ function avaliarReatorChernobylControlado()
         in = in.setVariable('planta', planta);
         in = in.setVariable('beta', beta);
         
-        %A IA deu uma ajudada para desenvolver essa parte gŕafica abaixo
+        %A IA deu uma boa ajudada para desenvolver essa parte gŕafica abaixo
         in = in.setModelParameter('Solver', 'ode15s');
         in = in.setModelParameter('MaxStep', '1e-4'); 
         
