@@ -10,13 +10,12 @@ t = 0:passo:t_final;
 %planta = obterPlantaReatorNuclear;
 beta = calculaBeta(planta);
 
+%define a entrada como sendo em funcao da 
+%insercao de reatividade externa
 Gp = obterTFReatividadeExterna(planta);
 [y_tf, t_tf] = lsim(Gp, t, t);
 dpex = timeseries(y_tf, t_tf);
 
-%atuador = 1 /s/s; % a ser alterado
-%[y_tf, t_tf] = step(atuador, t); % a ser alterado
-%dpex = timeseries(y_tf, t_tf);
 
 [Gtheta, Gv] = obterTFReatividade(planta);
 G0 = obterFTReatorPotenciaZero(planta);
@@ -25,7 +24,6 @@ G0 = obterFTReatorPotenciaZero(planta);
 [numGv, denGv] = tfdata(Gv, 'v');
 [numGtheta, denGtheta] = tfdata(Gtheta, 'v');
 
-%assignin('base', 'planta', planta);
 
 reator_chernobyl = 'ReatorChernobyl';
 load_system(reator_chernobyl);
@@ -41,7 +39,7 @@ in = in.setVariable('numGtheta', numGtheta);
 in = in.setVariable('denGtheta', denGtheta);
 in = in.setVariable('planta', planta);
 in = in.setVariable('beta', beta);
-in = in.setModelParameter('Solver', 'ode15s'); % eh um teste a ser removido
+in = in.setModelParameter('Solver', 'ode15s');
 
 simulacao = sim(in);
 

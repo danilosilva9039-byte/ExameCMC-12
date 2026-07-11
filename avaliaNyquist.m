@@ -1,4 +1,7 @@
 function avaliaNyquist()
+%traca diagrama de nyquist para diferentes valores de alpha_v
+% de modo a observar as diferentes curvas de nyquist e quando
+% ela passa a circular o ponto -1 + 0j
 
 planta = obterPlantaReatorNuclear;
 [Gtheta, Gv] = obterTFReatividade(planta);
