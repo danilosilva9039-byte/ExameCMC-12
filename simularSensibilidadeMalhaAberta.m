@@ -1,92 +1,158 @@
-function simularSensibilidadeMalhaAberta(planta, param_str, val_curvas, val_picos, config)
-    % Se val_picos não for fornecido, usa a mesma matriz das curvas
-    if nargin < 4 || isempty(val_picos)
-        val_picos = val_curvas;
+function val_critico = simularSensibilidadeMalhaAberta(planta, param_str, val_curvas, N_pontos, config)
+    % Função orquestradora: gerencia a busca binária, o cache e os plots.
+    
+    t_final = 150;
+    limite_explosao = 100;
+    C = 1; % Constante da fronteira linear/log para o BiLog
+    
+    memoria = containers.Map('KeyType', 'char', 'ValueType', 'any');
+    
+    % 1. Busca Binária
+    [val_critico, val_seguro] = rastrearFronteiraEstabilidade(planta, param_str, val_curvas, t_final, limite_explosao, memoria);
+    
+    % 2. Região de Estabilidade
+    if isnan(val_critico) && isnan(val_seguro)
+        val_picos = [];
+    elseif isnan(val_critico)
+        val_picos = linspace(min(val_curvas), max(val_curvas), N_pontos);
+    else
+        val_picos = linspace(val_seguro, val_critico, N_pontos);
     end
     
-    t_final = 100;
-    limite_explosao = 1000; % 1000x a potência nominal considera divergência
-    C = 0.5; % Constante de Fronteira
-
-    % Junta as duas matrizes e remove duplicatas para evitar simular 2x o mesmo valor
-    todos_vals = unique([val_curvas(:); val_picos(:)]');
-    
-    picos_validos = [];
-    vals_validos = [];
-    
-    fig_tempo = figure('Name', ['Temporal - ' config.titulo_base], 'NumberTitle', 'off', 'Position', [100, 100, 800, 500]);
-    hold on; grid on;
+    % 3. PLOT TEMPORAL (Lado Esquerdo - Todas as curvas)
+    fig_mestre = figure('Name', ['Análise - ' config.titulo_base], 'NumberTitle', 'off', 'Position', [100, 100, 1200, 500]);
+    subplot(1, 2, 1); hold on; grid on;
     cores = lines(length(val_curvas));
-    idx_cor = 1;
     
-    for k = 1:length(todos_vals)
-        val = todos_vals(k);
+    for k = 1:length(val_curvas)
+        val = val_curvas(k);
+        resultado = executarSimulacaoMemorizada(planta, param_str, val, t_final, memoria);
         
-        % MATLAB injeta o valor na variável certa a partir da string
-        planta.(param_str) = val;
-        
-        % Roda o simulador encapsulado em try-catch
-        % Isso blinda o código caso a explosão seja tão violenta que o Simulink desista
-        try
-            saida = simularRespostaTemporalReator(planta, t_final);
-            y = saida.Data;
-            t = saida.Time;
-            pico_max = max(y);
-        catch
-            y = inf;
-            t = 0;
-            pico_max = inf;
-        end
-        
-        % 1. Plot das curvas
-        if ismember(val, val_curvas)
-            if isinf(pico_max) % Se o solver quebrou, cria uma linha reta indicando explosão
-                plot(t, max(ylim), 'Color', cores(idx_cor,:), 'LineWidth', 2, 'LineStyle', '--', ...
-                     'DisplayName', sprintf([config.formato_legenda ' (Erro Solver)'], val));
-            else
-                % Transformação symlog: Linear perto de zero, log para valores grandes
-                y_trans = sign(y) .* log10(1 + abs(y)/C);
-                
-                plot(t, y_trans, 'Color', cores(idx_cor,:), 'LineWidth', 2, ...
-                    'DisplayName', config.func_legenda(val));
-            end
-            idx_cor = idx_cor + 1;
-        end
-        
-        % 2. Picos das curvas estáveis
-        if ismember(val, val_picos)
-            if pico_max < limite_explosao
-                picos_validos = [picos_validos, pico_max];
-                vals_validos = [vals_validos, val];
-            end
-        end
+        % Plota a curva independentemente de ter explodido ou não
+        y_trans = sign(resultado.y) .* log10(1 + abs(resultado.y)/C);
+        plot(resultado.t, y_trans, 'Color', cores(k,:), 'LineWidth', 2, ...
+            'DisplayName', config.func_legenda(val));
     end
     
-    % Ajustes do Eixo Y do Gráfico Temporal
-    ticks_reais = [-100, -10, -1, 0, 1, 10, 100, 1000];
-    ticks_trans = sign(ticks_reais) .* log10(1 + abs(ticks_reais)/C);
-    % Trava os limites reais de -1 a 1000 aplicando a mesma transformação BiLog
-    limite_inferior = sign(-1) * log10(1 + abs(-1)/C);
-    limite_superior = sign(1000) * log10(1 + abs(1000)/C);
-    ylim([limite_inferior, limite_superior]);
-    set(gca, 'YTick', ticks_trans, 'YTickLabel', string(ticks_reais));
+    % --- Controle de Limites do Eixo X ---
+    if isfield(config, 'xlimites')
+        xlim(config.xlimites);
+    end
     
+    % --- Controle de Limites do Eixo Y (Com transformação BiLog) ---
+    if isfield(config, 'ylimites')
+        limite_inferior = sign(config.ylimites(1)) * log10(1 + abs(config.ylimites(1))/C);
+        limite_superior = sign(config.ylimites(2)) * log10(1 + abs(config.ylimites(2))/C);
+        ylim([limite_inferior, limite_superior]);
+        
+        % Ticks dinâmicos restritos aos limites escolhidos
+        ticks_base = [-10000, -1000, -100, -10, -1, 0, 1, 10, 100, 1000, 10000];
+        ticks_reais = ticks_base(ticks_base >= config.ylimites(1) & ticks_base <= config.ylimites(2));
+    else
+        % Limites padrão se config.ylimites não for fornecido
+        limite_inferior = sign(-1) * log10(1 + abs(-1)/C);
+        limite_superior = sign(1000) * log10(1 + abs(1000)/C);
+        ylim([limite_inferior, limite_superior]);
+        ticks_reais = [-100, -10, -1, 0, 1, 10, 100, 1000];
+    end
+    
+    ticks_trans = sign(ticks_reais) .* log10(1 + abs(ticks_reais)/C);
+    set(gca, 'YTick', ticks_trans, 'YTickLabel', string(ticks_reais));
     xlabel('Tempo (s)', 'FontSize', 12);
-    ylabel('Variação Relativa (\delta n / n_0) [Escala BiLog]', 'FontSize', 12);
+    ylabel('Variação Relativa (\delta n / n_0)', 'FontSize', 12);
     title(['Dinâmica Temporal: ' config.titulo_base], 'FontSize', 14);
     legend('Location', 'best');
-    salvarFigura(fig_tempo, ['Temp_' config.param_str]);
     
-    % Gráfico de Potência Máxima (se alguma curva estabilizar)
-    if ~isempty(picos_validos)
-        fig_pico = figure('Name', ['Picos - ' config.titulo_base], 'NumberTitle', 'off');
-        plot(vals_validos, picos_validos, '-o', 'LineWidth', 2, 'MarkerFaceColor', 'b');
-        grid on;
+    % 4. PLOT DE PICOS (Lado Direito - Sem Legenda)
+    if ~isempty(val_picos)
+        subplot(1, 2, 2); hold on; grid on;
+        picos_validos = zeros(size(val_picos));
+        
+        for k = 1:length(val_picos)
+            val = val_picos(k);
+            resultado = executarSimulacaoMemorizada(planta, param_str, val, t_final, memoria);
+            picos_validos(k) = resultado.pico;
+        end
+        
+        % 'HandleVisibility', 'off' garante que o MATLAB nunca gere legenda para estes pontos
+        plot(val_picos, picos_validos, '-o', 'LineWidth', 2, 'MarkerFaceColor', 'b', 'MarkerSize', 4, 'HandleVisibility', 'off');
         xlabel(config.label_x, 'FontSize', 12);
         ylabel('Pico Máximo Estável (\delta n / n_0)', 'FontSize', 12);
-        title(['Estabilidade de Pico: ' config.titulo_base], 'FontSize', 14);
-        salvarFigura(fig_pico, ['Pico_' config.param_str]);
-    else
-        disp(['[Aviso] Nenhum ponto estável encontrado para ' param_str '. O reator sempre explodiu. Gráfico de picos ignorado.']);
+        title('Estabilidade Restrita à Região Operacional', 'FontSize', 14);
     end
+    
+    salvarFigura(fig_mestre, ['Analise_Unificada_' config.param_str]);
+end
+
+function [val_critico, val_seguro] = rastrearFronteiraEstabilidade(planta, param_str, val_curvas, t_final, lim, memoria)
+    % Testa os extremos do vetor de entrada. 
+    % Realiza busca binária apenas se houver transição de estabilidade.
+    
+    v_min = min(val_curvas);
+    v_max = max(val_curvas);
+    
+    res_min = executarSimulacaoMemorizada(planta, param_str, v_min, t_final, memoria);
+    res_max = executarSimulacaoMemorizada(planta, param_str, v_max, t_final, memoria);
+    
+    estavel_min = res_min.pico < lim;
+    estavel_max = res_max.pico < lim;
+    
+    if estavel_min && estavel_max
+        val_critico = NaN; % Seguro em todo o intervalo
+        val_seguro = v_min;
+        return;
+    elseif ~estavel_min && ~estavel_max
+        val_critico = NaN; % Explode em todo o intervalo
+        val_seguro = NaN;
+        return;
+    end
+    
+    % Identifica qual lado é o seguro e qual é o de explosão
+    if estavel_min
+        p_seguro = v_min; p_explosao = v_max;
+    else
+        p_seguro = v_max; p_explosao = v_min;
+    end
+    
+    val_seguro = p_seguro; % Salva o extremo seguro original para usar no plot
+    
+    tolerancia = abs(v_max - v_min) * 0.01; % 1% da janela de busca
+    
+    disp(['Iniciando busca binária para ', param_str, '...']);
+    while abs(p_explosao - p_seguro) > tolerancia
+        mid = (p_seguro + p_explosao) / 2;
+        res_mid = executarSimulacaoMemorizada(planta, param_str, mid, t_final, memoria);
+        
+        if res_mid.pico < lim
+            p_seguro = mid;
+        else
+            p_explosao = mid;
+        end
+    end
+    
+    val_critico = p_seguro; % O último valor estável antes da explosão
+end
+
+function resultado = executarSimulacaoMemorizada(planta, param_str, val, t_final, memoria)
+    
+    chave = sprintf('%.6e', val);
+    
+    if isKey(memoria, chave)
+        resultado = memoria(chave);
+        return;
+    end
+    
+    planta.(param_str) = val;
+    try
+        saida_sim = simularRespostaTemporalReator(planta, t_final);
+        resultado.t = saida_sim.Time;
+        resultado.y = saida_sim.Data;
+        resultado.pico = max(resultado.y);
+    catch
+        resultado.t = [0 t_final];
+        resultado.y = [inf inf];
+        resultado.pico = inf;
+    end
+    
+    memoria(chave) = resultado; % Salva no dicionário
 end
