@@ -21,7 +21,9 @@ function controlador = controladorReatorAnalitico(requisitos, planta)
     Ga = Ga*controlador.K;
     [~, PM, ~, Wcp] = margin(Ga);
 
-    phimax = requisitos.PM - PM;
+    phimax = requisitos.PM - PM; %poderia adicionar uma gordurinha, mas
+    % não adicionei para mostrar que o sistema já atende muito bem aos
+    %requisitos sem isso
 
     controlador.alpha = (1 - sind(phimax))/(1 + sind(phimax));
     controlador.Tl = 1/Wcp/sqrt(controlador.alpha);
