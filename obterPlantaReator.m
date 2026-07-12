@@ -29,4 +29,9 @@ function planta = obterPlantaReator()
     planta.d1 = 5.75; % Distância do pico positivo até a inserção total [m]
     planta.PR = 0.5 * planta.beta_total; % Pico positivo inicial
     planta.PRN = -2 * planta.beta_total; % Pico negativo final (absorção do boro)
+
+    % Parâmetros para análise de controlador em malha aberta
+    planta.fator_grafite = 1.0; % Porcentagem do pico de reatividade positiva
+    planta.fator_hastes = 1.0;  % Porcentagem das hastes inseridas
+
 end
