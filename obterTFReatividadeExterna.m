@@ -24,7 +24,7 @@ function Gp = obterTFReatividadeExterna(planta)
     k2 = delta_m2 * v;
     k3 = delta_m3 * v;
 
-    H_base = tf(1, 1); %%pois a funcao será chamada com uma rampa: 1/s^2
+    H_base = 1/s^2;
 
     H1 = k1 * H_base;
     H2 = k2 * H_base;

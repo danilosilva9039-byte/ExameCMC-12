@@ -24,7 +24,7 @@ grid on;
 avaliarReatorChernobyl(planta);
 
 %figura com um alpha_v que instabiliza o sistema
-planta.alphav = 0.015;
+planta.alphav = planta.alphacritico;
 avaliarReatorChernobyl(planta);
 
 end

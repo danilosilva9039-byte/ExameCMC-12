@@ -13,7 +13,7 @@ function avaliarReatorChernobylControlado()
     beta = calculaBeta(planta);
 
     Gp = obterTFReatividadeExterna(planta);
-    [y_dpex, t_dpex] = lsim(Gp, t, t); 
+    [y_dpex, t_dpex] = impulse(Gp, t); 
     dpex = timeseries(y_dpex, t_dpex);
 
     valorRef = tf(1, 1); 

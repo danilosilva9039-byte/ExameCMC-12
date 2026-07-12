@@ -4,6 +4,6 @@ function planta = SimulaFalhaChernobyl(planta)
     % por fenomenos fisicos
     
     % valor representativo
-    planta.alphav = 0.015;
+    planta.alphav = planta.alphacritico;
     
 end

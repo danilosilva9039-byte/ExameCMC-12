@@ -13,7 +13,7 @@ beta = calculaBeta(planta);
 %define a entrada como sendo em funcao da 
 %insercao de reatividade externa
 Gp = obterTFReatividadeExterna(planta);
-[y_tf, t_tf] = lsim(Gp, t, t);
+[y_tf, t_tf] = impulse(Gp, t);
 dpex = timeseries(y_tf, t_tf);
 
 

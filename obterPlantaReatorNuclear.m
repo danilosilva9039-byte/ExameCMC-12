@@ -8,6 +8,7 @@ function planta = obterPlantaReatorNuclear()
 planta.keff = 1;
 planta.N0 = 3.2*(10^9); % Em watts
 planta.alphav = 2*(10^-4);% estimado por modelos numéricos nos computadores de chernobyl
+planta.alphacritico = 0.025;% estimado por modelos numéricos nos computadores de chernobyl
 planta.alphatheta = -1.2*(10^-5); % estimado por modelos numéricos nos computadores de chernobyl
 planta.beta = [ 0.00021 , 0.00142 , 0.00127 , 0.00256 , 0.00074 , 0.00027];
 planta.lambda = [ 0.0124 , 0.0305 , 0.111 , 0.301 , 1.14 , 3.01 ];

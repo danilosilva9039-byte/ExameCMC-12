@@ -5,7 +5,7 @@ function Gplanta = obterFTPlanta(planta)
     beta = calculaBeta(planta);
 
     A = planta.alphav * Gv + planta.n * planta.alphatheta * Gtheta;
-    B = planta.alphav * Gv + planta.alphatheta* Gtheta;
+    B = obterFTReatividadeDeRealimentacao(planta);
 
     Gplanta = A/(1 - (beta/B/G0))/(B);
 

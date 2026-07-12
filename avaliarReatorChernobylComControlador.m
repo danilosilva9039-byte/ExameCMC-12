@@ -118,4 +118,7 @@ grid on;
 title(gca, ['Diagrama de Bode para Resposta do Reator a um comando de '...
     'referência inicial sem atuação das barras de boro']);
 
-wb = bandwidth(feedback(controlador * motor * Gplanta, 1))
+wb = bandwidth(feedback(controlador * motor * Gplanta, 1));
+display(wb)
+
+end

@@ -5,11 +5,8 @@ function Gc = obterFTReatorChernobyl(planta)
 beta = calculaBeta(planta);
 
 G0 = obterFTReatorPotenciaZero(planta);
+GF = obterFTReatividadeDeRealimentacao(planta);
 
-[Gtheta, Gv] = obterTFReatividade(planta);
-
-Gc = feedback((1/beta)*G0, planta.N0 *(planta.alphav * ...
-    Gv + planta.theta * Gtheta), +1);
-
-
+Gc = feedback( (1/beta)*G0, planta.N0 * GF, +1 );
+s
 end
