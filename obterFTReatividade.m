@@ -1,4 +1,4 @@
-function [Gtheta, Gv] = obterTFReatividade(planta)
+function [Gtheta, Gv] = obterFTReatividade(planta)
 % Obtem a função de transferência do aquecimento do combustı́vel (G0 (s)) e da geração de vazios
 % (Gv (s)) em resposta à variação de potência
 

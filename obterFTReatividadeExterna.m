@@ -1,4 +1,4 @@
-function Gp = obterTFReatividadeExterna(planta)
+function Gp = obterFTReatividadeExterna(planta)
 % Obtem a reatividade externa \delta \pho _{ex}
 % Ela foi modelada como uma rampa inicialmente para
 % simular seu comportamento de introducao de reatividade

@@ -21,12 +21,12 @@ ref_array(t >= 1) = 1; % O sinal pula de 0 para 1 em t=1s
 NeutronVarRef = timeseries(ref_array, t);
  
 
-[Gtheta, Gv] = obterTFReatividade(planta);
+[Gtheta, Gv] = obterFTReatividade(planta);
 G0 = obterFTReatorPotenciaZero(planta);
 controlador = controladorReatorAnalitico(requisitos.controlador, planta);
 controlador = controlador.K * (1/s) * ((controlador.Tl *s + 1)/(...
     controlador.alpha * controlador.Tl *s + 1));
-motor = obterTFMotor();
+motor = obterFTMotor();
 Gplanta = obterFTPlanta(planta); % mostra atendimento requisitos
 [numG0, denG0] = tfdata(G0, 'v');
 [numGv, denGv] = tfdata(Gv, 'v');

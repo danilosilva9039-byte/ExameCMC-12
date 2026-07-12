@@ -3,7 +3,7 @@ function controlador = controladorReatorOtimizado(requisitos, planta)
 
 controladorinicial = controladorReatorAnalitico(requisitos, planta);
 Gplanta = obterFTPlanta(planta);
-Gm = obterTFMotor();
+Gm = obterFTMotor();
 
 x0 = [controladorinicial.K controladorinicial.Tl controladorinicial.alpha];
 opcoes = optimset('Display', 'iter', 'MaxFunEvals', 2000, 'MaxIter', 2000);

@@ -4,7 +4,7 @@ function avaliaNyquist()
 % ela passa a circular o ponto -1 + 0j
 
 planta = obterPlantaReatorNuclear;
-[Gtheta, Gv] = obterTFReatividade(planta);
+[Gtheta, Gv] = obterFTReatividade(planta);
 G0 = obterFTReatorPotenciaZero(planta);
 
 beta = calculaBeta(planta);

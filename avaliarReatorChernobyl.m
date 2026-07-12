@@ -12,12 +12,12 @@ beta = calculaBeta(planta);
 
 %define a entrada como sendo em funcao da 
 %insercao de reatividade externa
-Gp = obterTFReatividadeExterna(planta);
+Gp = obterFTReatividadeExterna(planta);
 [y_tf, t_tf] = impulse(Gp, t);
 dpex = timeseries(y_tf, t_tf);
 
 
-[Gtheta, Gv] = obterTFReatividade(planta);
+[Gtheta, Gv] = obterFTReatividade(planta);
 G0 = obterFTReatorPotenciaZero(planta);
 
 [numG0, denG0] = tfdata(G0, 'v');

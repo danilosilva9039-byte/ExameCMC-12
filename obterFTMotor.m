@@ -1,4 +1,4 @@
-function Gm = obterTFMotor(planta)
+function Gm = obterFTMotor(planta)
 %obtem a funcao de transferencia do motor
 %Como foi mostrado no relatório, o sistema
 % de controle projetado instabiliza independente

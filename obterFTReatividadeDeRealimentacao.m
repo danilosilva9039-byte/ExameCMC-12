@@ -4,7 +4,7 @@ function GF = obterFTReatividadeDeRealimentacao(planta)
 
 	s = tf('s');
 
-	[Gtheta, Gv] = obterTFReatividade(planta);
+	[Gtheta, Gv] = obterFTReatividade(planta);
     GF = planta.alphatheta * Gtheta + planta.alphav * Gv;
      	
 

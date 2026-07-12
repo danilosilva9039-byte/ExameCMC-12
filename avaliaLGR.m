@@ -6,7 +6,7 @@ function avaliaLGR()
 % que houve cruzamento com o eixo imaginário
 
 planta = obterPlantaReatorNuclear;
-[Gtheta, Gv] = obterTFReatividade(planta);
+[Gtheta, Gv] = obterFTReatividade(planta);
 G0 = obterFTReatorPotenciaZero(planta);
 
 beta = calculaBeta(planta);
