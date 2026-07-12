@@ -2,7 +2,7 @@ function controlador = controladorReatorAnalitico(requisitos, planta)
 %projeta o controlador com base nos requisitos pedidos
 
     s = tf('s');
-    Gplanta = obterFTPlanta(planta);
+    Gplanta = obterFTMalhaFechada(planta);
 
     %considera-se a dinâmica do motor rápida i.e Gm = 1
 

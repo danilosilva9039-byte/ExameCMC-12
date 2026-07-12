@@ -7,7 +7,7 @@ passo = 0.01;
 s = tf('s');
 t = 0:passo:t_final;
 
-planta = obterPlantaReatorNuclear;
+planta = obterPlantaReator;
 requisitos = obterRequisitos(); 
 beta = calculaBeta(planta);
 
@@ -21,13 +21,13 @@ ref_array(t >= 1) = 1; % O sinal pula de 0 para 1 em t=1s
 NeutronVarRef = timeseries(ref_array, t);
  
 
-[Gtheta, Gv] = obterFTReatividade(planta);
-G0 = obterFTReatorPotenciaZero(planta);
+[Gtheta, Gv] = obterFTTermohidraulica(planta);
+G0 = obterFTPotenciaZero(planta);
 controlador = controladorReatorAnalitico(requisitos.controlador, planta);
 controlador = controlador.K * (1/s) * ((controlador.Tl *s + 1)/(...
     controlador.alpha * controlador.Tl *s + 1));
 motor = obterFTMotor();
-Gplanta = obterFTPlanta(planta); % mostra atendimento requisitos
+Gplanta = obterFTMalhaFechada(planta); % mostra atendimento requisitos
 [numG0, denG0] = tfdata(G0, 'v');
 [numGv, denGv] = tfdata(Gv, 'v');
 [numGtheta, denGtheta] = tfdata(Gtheta, 'v');

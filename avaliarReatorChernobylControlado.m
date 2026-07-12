@@ -8,7 +8,7 @@ function avaliarReatorChernobylControlado()
     s = tf('s');
     t = 0:passo:t_final;
 
-    planta = obterPlantaReatorNuclear();
+    planta = obterPlantaReator();
     planta = SimulaFalhaChernobyl(planta);
     beta = calculaBeta(planta);
 
@@ -20,8 +20,8 @@ function avaliarReatorChernobylControlado()
     [y_ref, t_ref] = step(valorRef, t); 
     NeutronVarRef = timeseries(y_ref, t_ref);
 
-    [Gtheta, Gv] = obterFTReatividade(planta);
-    G0 = obterFTReatorPotenciaZero(planta);
+    [Gtheta, Gv] = obterFTTermohidraulica(planta);
+    G0 = obterFTPotenciaZero(planta);
 
     [numG0, denG0] = tfdata(G0, 'v');
     [numGv, denGv] = tfdata(Gv, 'v');

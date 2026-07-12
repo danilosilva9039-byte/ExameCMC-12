@@ -2,7 +2,7 @@ function controlador = controladorReatorOtimizado(requisitos, planta)
 %projeta o controlador com ajuste fino numérico
 
 controladorinicial = controladorReatorAnalitico(requisitos, planta);
-Gplanta = obterFTPlanta(planta);
+Gplanta = obterFTMalhaFechada(planta);
 Gm = obterFTMotor();
 
 x0 = [controladorinicial.K controladorinicial.Tl controladorinicial.alpha];
