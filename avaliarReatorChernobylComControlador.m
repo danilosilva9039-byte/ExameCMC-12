@@ -9,7 +9,7 @@ t = 0:passo:t_final;
 
 planta = obterPlantaReator;
 requisitos = obterRequisitos(); 
-beta = calculaBeta(planta);
+beta = planta.beta_total;
 
 % 1. Distúrbio Nulo (Haste de Boro parada)
 dpex_array = zeros(size(t));
