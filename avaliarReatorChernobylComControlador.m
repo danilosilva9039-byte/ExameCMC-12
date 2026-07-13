@@ -23,10 +23,10 @@ NeutronVarRef = timeseries(ref_array, t);
 
 [Gtheta, Gv] = obterFTTermohidraulica(planta);
 G0 = obterFTPotenciaZero(planta);
-controlador = controladorReatorAnalitico(requisitos.controlador, planta);
+controlador = controladorReatorAnalitico(requisitos.controlador, planta); % a ser substituido pelo otimizado
 controlador = controlador.K * (1/s) * ((controlador.Tl *s + 1)/(...
     controlador.alpha * controlador.Tl *s + 1));
-motor = obterFTMotor();
+motor = obterFTMotor(planta, requisitos.motor);
 Gplanta = obterFTMalhaFechada(planta); % mostra atendimento requisitos
 [numG0, denG0] = tfdata(G0, 'v');
 [numGv, denGv] = tfdata(Gv, 'v');
