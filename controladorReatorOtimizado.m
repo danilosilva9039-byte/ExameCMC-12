@@ -1,9 +1,9 @@
 function controlador = controladorReatorOtimizado(requisitos, planta)
 %projeta o controlador com ajuste fino numérico
 
-controladorinicial = controladorReatorAnalitico(requisitos, planta);
+controladorinicial = controladorReatorAnalitico(requisitos.controlador, planta);
 Gplanta = obterFTMalhaFechada(planta);
-Gm = obterFTMotor();
+Gm = obterFTMotor(planta, requisitos.motor);
 
 x0 = [controladorinicial.K controladorinicial.Tl controladorinicial.alpha];
 opcoes = optimset('Display', 'iter', 'MaxFunEvals', 2000, 'MaxIter', 2000);
@@ -34,6 +34,6 @@ Gf = feedback(Ga, 1);
 banda = bandwidth(Gf);
 [~, PM, ~, Wcp] = margin(Ga);
 
-J = (requisitos.wb - banda)^2 + (requisitos.PM - PM)^2;
+J = (requisitos.controlador.wb - banda)^2 + (requisitos.controlador.PM - PM)^2;
 
 end
