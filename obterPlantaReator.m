@@ -34,4 +34,9 @@ function planta = obterPlantaReator()
     planta.fator_grafite = 1.0; % Porcentagem do pico de reatividade positiva
     planta.fator_hastes = 1.0;  % Porcentagem das hastes inseridas
 
+    % Parâmetros do motor
+
+    planta.vazaomotor = 1; %fictício, mas factível (sem esse dado disponilizado)
+    planta.taumotor = 2; % Em segundos. Factível considerando a inércia desse sistema
+
 end
