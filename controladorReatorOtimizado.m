@@ -13,9 +13,9 @@ controlador.K = otimizacao(1);
 controlador.Tl = otimizacao(2);
 controlador.alpha = otimizacao(3);
 
-% Implementar
-
 end
+
+%implementa a função de custo
 
 function J = custoControlador(requisitos, planta, Gplanta, Gm, parametros)
 

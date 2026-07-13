@@ -1,6 +1,8 @@
 function Gp = obterFTReatividadeExterna(planta)
     % Modelagem do distúrbio de inserção das hastes com atrasos de transporte
     cin = calcularCinematicaHastes(planta);
+
+    s = tf('s');
     
     H_base = 1/s^2;
     

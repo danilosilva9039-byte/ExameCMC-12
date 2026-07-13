@@ -10,6 +10,8 @@ function saida = simularRespostaTemporalReator(planta, t_final)
     [Gtheta, Gv] = obterFTTermohidraulica(planta);
     G0 = obterFTPotenciaZero(planta);
 
+    %coloca no simulink esses dados
+
     [numG0, denG0] = tfdata(G0, 'v');
     [numGv, denGv] = tfdata(Gv, 'v');
     [numGtheta, denGtheta] = tfdata(Gtheta, 'v');
@@ -30,6 +32,8 @@ function saida = simularRespostaTemporalReator(planta, t_final)
     in = in.setVariable('denGtheta', denGtheta);
     in = in.setVariable('planta', planta);
     in = in.setVariable('beta', planta.beta_total); 
+
+    %simula
 
     simulacao = sim(in);
     saida = simulacao.NeutronVar;

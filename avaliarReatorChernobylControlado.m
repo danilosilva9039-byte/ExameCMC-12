@@ -8,17 +8,26 @@ function avaliarReatorChernobylControlado()
     s = tf('s');
     t = 0:passo:t_final;
 
+    %obtem os dados
+
     planta = obterPlantaReator();
     planta = SimulaFalhaChernobyl(planta);
-    beta = calculaBeta(planta);
+    beta = planta.beta_total;
+    requisitos = obterRequisitos;
+
+    %faz insert da introducao de reatividade
 
     Gp = obterFTReatividadeExterna(planta);
     [y_dpex, t_dpex] = impulse(Gp, t); 
     dpex = timeseries(y_dpex, t_dpex);
 
+    % comando de referência
+
     valorRef = tf(1, 1); 
     [y_ref, t_ref] = step(valorRef, t); 
     NeutronVarRef = timeseries(y_ref, t_ref);
+
+    %carrega as funções de transferência
 
     [Gtheta, Gv] = obterFTTermohidraulica(planta);
     G0 = obterFTPotenciaZero(planta);
@@ -27,7 +36,7 @@ function avaliarReatorChernobylControlado()
     [numGv, denGv] = tfdata(Gv, 'v');
     [numGtheta, denGtheta] = tfdata(Gtheta, 'v');
 
-    Gm = obterFTMotor(planta);
+    Gm = obterFTMotor(planta, requisitos.motor);
     [numGm, denGm] = tfdata(Gm, 'v'); 
 
     reator_chernobyl_controlado = 'ReatorChernobylControlado';
@@ -39,6 +48,9 @@ function avaliarReatorChernobylControlado()
 
     figure;
     hold on; grid on;
+
+    %loop nos valores de K simulados no simulink
+
 
     for i = 1:length(K_valores)
         K = K_valores(i);
@@ -104,6 +116,8 @@ function avaliarReatorChernobylControlado()
             end
         end
     end
+
+    %faz os graficos
 
     xlabel('Tempo (s)', 'FontSize', 12);
     ylabel('Potência Relativa Total (N / N_0) - Escala Log', 'FontSize', 12);
